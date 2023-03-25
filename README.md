@@ -35,3 +35,11 @@ If two or more frames collide, they are retransmitted after a random delay.
 - The optimal frame transmission time for both slotted and unslotted ALOHA is dependent on the number of stations.
 - For unslotted ALOHA, the maximum achievable throughput is given by `N*P(1 - P)^(N-1)` at `M = 1/P`.
 - For slotted ALOHA, the maximum achievable throughput is given by `N*P(1 - P)^(N-1)` at `M = 1/(2P)`.
+
+![](output/Throughput%20vs.%20M%20for%20slotted-ALOHA%20with%20P=0.05%20and%20N=50.png)
+
+![](output/Throughput%20vs.%20M%20for%20unslotted-ALOHA%20with%20P=0.05%20and%20N=50.png)
+
+![](output/Throughput%20vs.%20N%20for%20slotted-ALOHA%20with%20P=0.05%20and%20M=1.png)
+
+![](output/Throughput%20vs.%20N%20for%20unslotted-ALOHA%20with%20P=0.05%20and%20M=1.png)
