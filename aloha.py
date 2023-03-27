@@ -1,52 +1,84 @@
 import random
 
 
+class Station:
+    def __init__(self):
+        self.frames = 0  # frames waiting to be transmitted
+        self.state = 0  # 0 represents idle, 1 represents transmitting
+        self.delay = 0  # delay of the current frame
+        self.transTime = 0  # time remaining to transmit the current frame
+
+    def generateFrames(self, transmissionProb):
+        if random.random() < transmissionProb:
+            self.frames += 1
+            return True
+
+    def transmit(self, frameTransTime, slotted, t):
+        # if the station is idle and has frames to transmit
+        # No need to check for the transmission time, because we can only send if the station is idle
+        if self.frames > 0 and self.state == 0:
+            # check if the station has a delay
+            if self.delay > 0:
+                self.delay -= 1
+                return
+            # if slotted ALOHA, only transmit at the beginning of a time slot
+            if slotted and t % frameTransTime != 0:
+                return  # not a valid time slot
+            self.state = 1  # start transmitting
+            # decrement the number of frames to transmit
+            self.frames -= 1
+            # set the transmission time
+            self.transTime = frameTransTime
+
+    def endTransmission(self, frameTransTime, slotted, t):
+        # Check if the transmission is complete
+        if self.transTime > 0:
+            self.transTime -= 1
+            return False
+        else:
+            self.state = 0  # stop transmitting
+            self.transTime = 0  # reset the transmission time
+            return True
+            
+    def cancelTransmission(self, frameTransTime, slotted, t):
+        self.state = 0  # stop transmitting
+        self.transTime = 0  # reset the transmission time
+        self.frames += 1  # increment the number of frames to transmit
+        # set a random delay, max delay is 10 time units
+        if slotted:
+            self.delay = random.randint(0, 10) * frameTransTime
+        else:
+            self.delay = random.randint(0, 10)
+
+
+
 def simulateAloha(numStations, transmissionProb, frameTransTime, totalSimTime, slotted=False):
-    # Initialize the simulation state
-    state = [0] * numStations  # 0 represents idle, 1 represents transmitting
-    frames = [0] * numStations  # frames waiting to be transmitted
-    delay = [0] * numStations  # delay of the current frame
+    # Initialize the simulation states
+    stations = [Station() for i in range(numStations)]
+    totalNumTransmissions = 0
     successfulTransmissions = 0  # count of successfully transmitted frames
     collisions = 0  # count of collisions
     # Simulate the ALOHA protocol for (totalSimTime) time units
-    # show progress bar
     for t in range(totalSimTime):
-        # Stations generate frames with probability (transmissionProb)
-        for i in range(numStations):
-            if random.random() < transmissionProb:
-                frames[i] += 1
+        # Stations generate frames
+        for s in stations:
+            if s.generateFrames(transmissionProb):
+                totalNumTransmissions += 1
         # Stations transmit frames if they have any
-        for i in range(numStations):
-            # if the station is idle and has frames to transmit
-            if frames[i] > 0 and state[i] == 0:
-                # check if the station is in the delay period
-                if delay[i] > 0:
-                    delay[i] -= 1
-                    continue
-                # if slotted ALOHA, onl y transmit at the beginning of a time slot
-                if slotted and t % frameTransTime != 0:
-                    continue  # not a valid time slot
-                state[i] = 1  # start transmitting
-                frames[i] -= 1  # decrement the number of frames to transmit
+        random.shuffle(stations)
+        for s in stations:
+            s.transmit(frameTransTime, slotted, t)
+            # break # Allow only one station to transmit in each time slot
         # Check for collisions
-        activeStations = sum(state)  # number of stations transmitting
-        if activeStations > 1:  # if more than one station is transmitting
+        activeStations = [s for s in stations if s.state == 1]
+        numActiveStations = len(activeStations) # number of stations transmitting
+        if numActiveStations > 1: # if more than one station is transmitting
             collisions += 1
-            for i in range(numStations):
-                # if the station is transmitting
-                if state[i] == 1:
-                    # increment the number of frames to transmit
-                    frames[i] += 1
-                    state[i] = 0  # stop transmitting
-                    # set a random delay
-                    delay[i] += random.randint(0, 10) * frameTransTime
-        elif activeStations == 1:  # if exactly one station is transmitting
-            successfulTransmissions += 1
-            for i in range(numStations):
-                if state[i] == 1:  # if the station is transmitting
-                    state[i] = 0  # stop transmitting
+            for s in activeStations: # cancel the transmission of all stations
+                s.cancelTransmission(frameTransTime, slotted, t)
+        elif numActiveStations == 1:  # if exactly one station is transmitting
+            for s in activeStations: # end the transmission of the station
+                if s.endTransmission(frameTransTime, slotted, t):
+                    successfulTransmissions += 1
 
-    return successfulTransmissions, collisions, state
-
-
-
+    return successfulTransmissions, collisions, totalNumTransmissions

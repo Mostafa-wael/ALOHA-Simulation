@@ -1,37 +1,35 @@
 from aloha import simulateAloha
-from plotting import plot_throughput_vs_N, plot_throughput_vs_M, plot_throughput_vs_MM
+from plotting import plot_throughput_vs_N, plot_throughput_vs_M
 
 
 def main():
-    transmissionProb = 0.05  # probability of transmission
     totalSimTime = 10000  # total simulation time
+    ########################################
+    # Plot throughput vs. M for both unslotted and slotted ALOHA
+    transmissionProb = 0.05  # probability of transmission
+    numStations = 10  # number of stations
+    frameTransTimeValues = list(range(1, 26, 1))
+    plot_throughput_vs_M(numStations, transmissionProb,
+                         frameTransTimeValues, totalSimTime)
 
+    ########################################
     # Plot throughput vs. N for both unslotted and slotted ALOHA
-    numStationsValues = list(range(10, 101, 20))
+    transmissionProb = 0.5  # probability of transmission
+    numStationsValues = list(range(1, 51, 1))
     frameTransTime = 1  # transmission time
     plot_throughput_vs_N(numStationsValues, transmissionProb,
                          frameTransTime, totalSimTime)
-    plot_throughput_vs_N(numStationsValues, transmissionProb,
-                         frameTransTime, totalSimTime)
 
-    # Plot throughput vs. M for both unslotted and slotted ALOHA
-    numStations = 10  # number of stations
-    # transmission time values to test
-    frameTransTimeValues = list(range(1, 51, 5))
+    ########################################
+    # Find the maximum throughput for both unslotted and slotted ALOHA
     maxThroughput = numStations * transmissionProb * \
         (1 - transmissionProb) ** (numStations - 1)
     maxThroughputFrameTransTimeSlotted = 1 / (2 * transmissionProb)
     maxThroughputFrameTransTimeUnslotted = 1 / transmissionProb
-    plot_throughput_vs_M(numStations, transmissionProb,
-                         frameTransTimeValues, totalSimTime)
-    plot_throughput_vs_M(numStations, transmissionProb,
-                         frameTransTimeValues, totalSimTime)
-    plot_throughput_vs_MM(numStations, transmissionProb,
-                         frameTransTimeValues, totalSimTime)
-    print('Maximum throughput for unslotted ALOHA: {} at M = {} and P = {}'.format(
-        maxThroughput, maxThroughputFrameTransTimeUnslotted, transmissionProb))
-    print('Maximum throughput for slotted ALOHA: {} at M = {} and P = {}'.format(
-        maxThroughput, maxThroughputFrameTransTimeSlotted, transmissionProb))
+    print('Maximum throughput for unslotted ALOHA with P = {}: {} at M = {}'.format(
+        maxThroughput, transmissionProb, maxThroughputFrameTransTimeUnslotted))
+    print('Maximum throughput for slotted ALOHA with P = {}: {} at M = {}'.format(
+        maxThroughput, transmissionProb, maxThroughputFrameTransTimeSlotted))
 
 
 if __name__ == '__main__':
