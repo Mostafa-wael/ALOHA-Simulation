@@ -55,8 +55,8 @@ class Station:
 def simulateAloha(numStations, transmissionProb, frameTransTime, totalSimTime, slotted=False):
     # Initialize the simulation states
     stations = [Station() for i in range(numStations)]
-    totalNumTransmissions = 0
     successfulTransmissions = 0  # count of successfully transmitted frames
+    totalNumTransmissions = 0
     collisions = 0  # count of collisions
     # Simulate the ALOHA protocol for (totalSimTime) time units
     for t in range(totalSimTime):

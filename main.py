@@ -14,9 +14,9 @@ def main():
 
     ########################################
     # Plot throughput vs. N for both unslotted and slotted ALOHA
-    transmissionProb = 0.5  # probability of transmission
-    numStationsValues = list(range(1, 51, 1))
-    frameTransTime = 1  # transmission time
+    transmissionProb = 0.05  # probability of transmission
+    numStationsValues = list(range(1, 21, 1))
+    frameTransTime = 3  # transmission time
     plot_throughput_vs_N(numStationsValues, transmissionProb,
                          frameTransTime, totalSimTime)
 

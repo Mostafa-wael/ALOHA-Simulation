@@ -37,4 +37,4 @@ If two or more frames collide, they are retransmitted after a random delay.
 - For slotted ALOHA, the maximum achievable throughput is given by `N*P(1 - P)^(N-1)` at `M = 1/(2P)`.
 
 ![](output/Throughput%20vs.%20M%20for%20ALOHA%20with%20P=0.05,%20N=10,%20T=10000.png)
-![](output/Throughput%20vs.%20N%20for%20ALOHA%20with%20P=0.5,%20M=1,%20T=10000.png)
+![](output/Throughput%20vs.%20N%20for%20ALOHA%20with%20P=0.05,%20M=3,%20T=10000.png)

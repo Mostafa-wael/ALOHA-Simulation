@@ -8,7 +8,7 @@ def get_throughput_vs_N(numStationsValues, transmissionProb, frameTransTime, tot
     for N in tqdm(numStationsValues, desc='N'):
         successfulTransmissions, collisions, totalNumTransmissions = simulateAloha(
             N, transmissionProb, frameTransTime, totalSimTime, slotted)
-        throughput = successfulTransmissions / totalNumTransmissions
+        throughput = successfulTransmissions / max(totalNumTransmissions, 1)
         throughputValues.append(throughput)
     return throughputValues
 
@@ -37,7 +37,7 @@ def get_throughput_vs_M(numStations, transmissionProb, frameTransTimeValues, tot
     for frameTransTime in tqdm(frameTransTimeValues, desc='M'):
         successfulTransmissions, collisions, totalNumTransmissions = simulateAloha(
             numStations, transmissionProb, frameTransTime, totalSimTime, slotted)
-        throughput = successfulTransmissions / totalNumTransmissions
+        throughput = successfulTransmissions / max(totalNumTransmissions, 1)
         throughputValues.append(throughput)
     return throughputValues
 
